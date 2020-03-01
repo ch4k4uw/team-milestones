@@ -67,8 +67,12 @@ gulp.task('views', (cb) => {
 		.pipe(gulp.dest('./build/public'));
 });
 gulp.task('key-configs', (cb) => {
-	return gulp.src("./app-keys.json")
-		.pipe(gulp.dest('./build'));
+	var fs = require("fs");
+	if (fs.existsSync('./app-keys.json')) {
+		return gulp.src("./app-keys.json")
+			.pipe(gulp.dest('./build'));
+	}
+	return Promise.resolve('Nothing to do');
 });
 
 gulp.task('test-png-images', (cb) => {
