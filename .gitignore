@@ -1,0 +1,5 @@
+node_modules
+build
+app-keys.json
+src/core/db/milestones.json
+src/server/configs/config.production.json

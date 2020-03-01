@@ -1,0 +1,10 @@
+{
+  "server": {
+    "port": 5000,
+    "jwtSecret": "random-secret-password",
+    "jwtAndroidSecret": "android-201907110422-client",
+    "jwtExpiration": "1h",
+    "routePrefix": "",
+    "plugins": ["logger", "inert", "swagger", "handlebars"]
+  }
+}
