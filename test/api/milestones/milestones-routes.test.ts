@@ -7,6 +7,7 @@ import { Context } from "../../../src/core/app-context";
 import uuid = require("uuid");
 import { IMilestone } from "../../../src/core/abstraction/model/milestone";
 import { IContext } from "../../../src/core/abstraction/app-context";
+import { ContextMock } from "../../core/app-context.mock.test";
 
 const assert = Chai.assert;
 const expect = Chai.expect;
@@ -15,8 +16,37 @@ describe('Routes tests', () => {
     let server: Hapi.Server;
     let context: IContext;
     before(async () => {
-        context = await Context.getContext();
+        context = new ContextMock();
         server = await Server.init(Configs.getServerConfigs(), context);
+
+        context.data.repositories.milestones.addAll([
+            {
+                year: 2020,
+                month: 2,
+                description: 'Team Milestones project Released'
+            },
+            {
+                year: 2020,
+                month: 3,
+                day: 1,
+                date: new Date(2020, 2, 1),
+                description: 'Team Milestones project fixed'
+            },
+            {
+                year: 2020,
+                month: 3,
+                day: 2,
+                date: new Date(2020, 2, 2),
+                description: 'Some random user read this test case'
+            },
+            {
+                year: 2020,
+                month: 3,
+                day: 3,
+                date: new Date(2020, 2, 2),
+                description: 'Our team finish the first flying car of world (great day)'
+            },
+        ]);
     });
 
     after(async () => {
