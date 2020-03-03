@@ -9,7 +9,7 @@ import { IMilestonesRepository } from "../../src/core/abstraction/repository/mil
 const assert = Chai.assert;
 const expect = Chai.expect;
 
-describe('App Context tests', () => {
+describe.skip('App Context integration tests', () => {
     let context: IContext = null;
     let milestonesRepository: IMilestonesRepository = null;
     beforeEach(async () => {
@@ -21,7 +21,8 @@ describe('App Context tests', () => {
         await context.data.repositories.clearAll();
     });
 
-    it('Init', async () => {
+    //Enable it just if you prepopulate your DB on first first initialization (check firebase-data.ts)
+    xit('Init', async () => {
         const milestones = await milestonesRepository.listAll();
         expect(milestones).not.empty;
     });
