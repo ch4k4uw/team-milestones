@@ -58,7 +58,7 @@ class FirebaseDatabase implements IDatabase {
         });
     }
 
-    async insertAllMilestone(milestone: IMilestone, transaction?: ITransaction): Promise<void> {
+    async insertMilestone(milestone: IMilestone, transaction?: ITransaction): Promise<void> {
         const doc = this.mMilestonesCollRef.doc();
 
         milestone.id = doc.id;

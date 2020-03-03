@@ -11,7 +11,7 @@ export class MilestonesRepository implements IMilestonesRepository {
     }
 
     async add(milestone: IMilestone, transaction?: ITransaction): Promise<void> {
-        await this.db.insertAllMilestone(milestone, transaction);
+        await this.db.insertMilestone(milestone, transaction);
     }
 
     async addAll(milestones: IMilestone[], transaction?: ITransaction): Promise<void> {

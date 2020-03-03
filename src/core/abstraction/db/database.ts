@@ -6,7 +6,7 @@ export interface ITransaction {
 
 export interface IDatabase {
     queryAllMilestones(transaction?: ITransaction) : Promise<IMilestone[]>;
-    insertAllMilestone(milestones: IMilestone, transaction?: ITransaction) : Promise<void>;
+    insertMilestone(milestones: IMilestone, transaction?: ITransaction) : Promise<void>;
     insertAllMilestones(milestones: IMilestone[], transaction?: ITransaction) : Promise<void>;
     updateMilestone(milestone: IMilestone, transaction?: ITransaction) : Promise<void>;
     deleteMilestoneById(id: string, transaction?: ITransaction) : Promise<void>;
