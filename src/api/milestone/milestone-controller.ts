@@ -40,7 +40,12 @@ export default class MilestoneController {
                     description: string
                 }?
             ];
-            milestones.forEach(milestone => {
+            milestones.sort((milestone1, milestone2) => {
+                const m1 = `${milestone1.year}-${padLeft(milestone1.month)}-${padLeft(milestone1.day)}##'${milestone1.description}#`;
+                const m2 = `${milestone2.year}-${padLeft(milestone2.month)}-${padLeft(milestone2.day)}##'${milestone2.description}#`;
+
+                return m1 > m2 ? 1 : -1;
+            }).forEach(milestone => {
                 if (milestone.year !== lastYear) {
                     lastYear = milestone.year;
                     currDto = [];

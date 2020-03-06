@@ -6,7 +6,8 @@ import { IDatabase, ITransaction } from "../abstraction/db/database";
 import { IFirebaseConfig } from "../abstraction/model/firebase-config";
 import { IMilestone } from '../abstraction/model/milestone';
 
-const migrationFilePath = Path.resolve(__dirname, 'migrations.json');
+const env = process.env.NODE_ENV !== 'production' ? '-' + (process.env.NODE_ENV || 'dev') : '';
+const migrationFilePath = Path.resolve(__dirname, `migrations${env}.json`);
 const milestonesDescriptionsPath = Path.resolve(__dirname, 'milestones.json');
 function writeMigrationsFile(version: number) {
     if (process.env.NODE_ENV !== 'test') {
@@ -354,7 +355,7 @@ class FirebaseDatabase implements IDatabase {
     }
 
     private get milestonesCollectionName(): string {
-        return `milestones${process.env.NODE_ENV === 'test' ? '-dev' : ''}`;
+        return `milestones${env}`;
     }
 
     private async migrate(db: firestore.Firestore, version: number) {
