@@ -1,0 +1,5 @@
+{
+  "global": {
+    "node_env": "production"
+  }
+}

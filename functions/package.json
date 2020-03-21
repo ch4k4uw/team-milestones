@@ -1,0 +1,52 @@
+{
+  "name": "functions",
+  "scripts": {
+    "build": "tsc",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "just_serve": "firebase emulators:start --only functions"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@hapi/boom": "7.4.11",
+    "@hapi/good": "8.2.4",
+    "@hapi/good-console": "8.1.2",
+    "@hapi/good-squeeze": "5.2.1",
+    "@hapi/hapi": "18.4.0",
+    "@hapi/inert": "5.2.2",
+    "@hapi/joi": "15.1.1",
+    "@hapi/joi-date": "1.3.0",
+    "@hapi/vision": "5.5.4",
+    "archiver": "3.0.0",
+    "bcryptjs": "2.4.3",
+    "eslint": "4.19.0",
+    "filesystem": "1.0.1",
+    "firebase-admin": "^8.10.0",
+    "firebase-functions": "^3.4.0",
+    "fs-extra": "7.0.1",
+    "handlebars": "4.7.3",
+    "hapi-api-key": "^3.3.0",
+    "hapi-auth-jwt2": "^8.3.0",
+    "hapi-swagger": "10.2.0",
+    "jsonwebtoken": "8.2.1",
+    "moment": "2.22.1",
+    "moment-timezone": "0.5.16",
+    "nconf": "0.10.0",
+    "nodemon": "1.17.3",
+    "path": "0.12.7",
+    "swagger-parser": "8.0.3",
+    "swagger-ui-dist": "3.24.0",
+    "uuid": "3.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^3.2.2",
+    "firebase-functions-test": "^0.1.6"
+  },
+  "private": true
+}

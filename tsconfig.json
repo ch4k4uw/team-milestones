@@ -7,11 +7,13 @@
     "sourceMap": true,
     "typeRoots": ["node_modules/@types"]
   },
+  "compileOnSave": true,
   "include": [
     "src/**/**.ts",
     "test/**/**.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "functions"
   ]
 }
