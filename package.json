@@ -1,7 +1,7 @@
 {
-  "name": "db1-treetech-milestones",
+  "name": "team-milestones",
   "version": "1.0.0",
-  "description": "Treetech Milestones",
+  "description": "Team Milestones",
   "license": "MIT",
   "repository": {},
   "author": "Pedro Motta",
@@ -22,7 +22,8 @@
     "configs": "gulp configs",
     "key-configs": "gulp key-configs",
     "update-configs": "gulp update-configs",
-    "test-images": "gulp test-images"
+    "test-images": "gulp test-images",
+    "fb_serve": "firebase emulators:start --only functions"
   },
   "dependencies": {
     "@hapi/boom": "7.4.11",
@@ -38,7 +39,8 @@
     "bcryptjs": "2.4.3",
     "eslint": "4.19.0",
     "filesystem": "1.0.1",
-    "firebase-admin": "^8.9.2",
+    "firebase-admin": "^8.10.0",
+    "firebase-functions": "^3.4.0",
     "fs-extra": "7.0.1",
     "handlebars": "4.7.3",
     "hapi-api-key": "^3.3.0",

@@ -2,8 +2,6 @@ import * as Hapi from "@hapi/hapi";
 import * as Chai from "chai";
 import * as Server from "../../../src/server";
 import * as Configs from "../../../src/server/configs";
-import * as ChaiPromised from "chai-as-promised";
-import { Context } from "../../../src/core/app-context";
 import uuid = require("uuid");
 import { IMilestone } from "../../../src/core/abstraction/model/milestone";
 import { IContext } from "../../../src/core/abstraction/app-context";

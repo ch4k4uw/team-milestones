@@ -1,6 +1,8 @@
 import * as Server from './server';
 import * as Configs from "./server/configs";
+import * as Hapi from "@hapi/hapi";
 import { Context } from "./core/app-context";
+import { IContext } from './core/abstraction/app-context';
 
 // Catch unhandling unexpected exceptions
 process.on("uncaughtException", (error: Error) => {
@@ -12,22 +14,27 @@ process.on("unhandledRejection", (reason: any) => {
     console.error(`unhandledRejection ${reason}`);
 });
 
-const start = async ({ config }) => {
-    try {
+export const server: (context?: IContext) => Promise<Hapi.Server> = async (context?: IContext) => {
+    if (!context) {
         console.log("Create Context");
-        const context = await Context.getContext();
+        context = await Context.getContext();
         console.log("Context created sucessfully.");
-
-        const server = await Server.init(config, context);
-        await server.start();
-        console.log("Server running at:", server.info.uri);
+    }
+    try {
+        return await Server.init(Configs.getServerConfigs(), context);
     } catch (err) {
         console.error("Error starting server: ", err.message);
         throw err;
     }
 };
 
-// Start the server
-start({
-    config: Configs.getServerConfigs()
-});
+if (!process.env.FIREBASE_CONFIG || !process.env.GCLOUD_PROJECT) {
+    server()
+        .then(async server => {
+            await server.start();
+            console.log("Server running at:", server.info.uri);
+        })
+        .catch(err => {
+            throw err;
+        });
+}

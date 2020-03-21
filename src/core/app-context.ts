@@ -1,7 +1,7 @@
 import * as nconf from "nconf";
 import * as path from "path";
 import { IAppKeys } from "./abstraction/model/app-keys";
-import { IContext, IRepositories, IDataAccess } from "./abstraction/app-context";
+import { IContext, IDataAccess } from "./abstraction/app-context";
 import { Database } from "./db/firebase-database";
 import { MilestonesRepository } from "./repository/milestones-repository";
 import { IDatabase, ITransaction } from "./abstraction/db/database";

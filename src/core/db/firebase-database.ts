@@ -5,12 +5,13 @@ import { firestore, initializeApp, app } from 'firebase-admin';
 import { IDatabase, ITransaction } from "../abstraction/db/database";
 import { IFirebaseConfig } from "../abstraction/model/firebase-config";
 import { IMilestone } from '../abstraction/model/milestone';
+import { Environment } from "../environment";
 
-const env = process.env.NODE_ENV !== 'production' ? '-' + (process.env.NODE_ENV || 'dev') : '';
+const env = !Environment.isProduction() ? '-' + (Environment.getNodeEnv() || 'dev') : '';
 const migrationFilePath = Path.resolve(__dirname, `migrations${env}.json`);
 const milestonesDescriptionsPath = Path.resolve(__dirname, 'milestones.json');
 function writeMigrationsFile(version: number) {
-    if (process.env.NODE_ENV !== 'test') {
+    if (!Environment.isTest()) {
         Fs.writeFileSync(migrationFilePath, JSON.stringify({ v: version }));
     }
 }

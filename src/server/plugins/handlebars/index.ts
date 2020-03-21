@@ -1,11 +1,15 @@
-import * as Handlebars from 'handlebars';
 import * as Hapi from "@hapi/hapi";
-import * as Path from "path";
 import * as Vision from "@hapi/vision";
+import * as Fs from "fs";
+import * as Handlebars from 'handlebars';
+import * as Path from "path";
 import { IPlugin, IPluginOptions } from '..';
 import { IServerConfigurations } from '../../../core/abstraction/model/server-config';
+import { Environment } from "../../../core/environment";
 
-const viewsPath = Path.resolve('public', 'views');
+const NODE_ENV = Environment.getNodeEnv();
+const prefix = null; //Fs.existsSync(Path.resolve('build')) ? 'build' : Fs.existsSync(Path.resolve('lib')) ? 'lib' : null;
+const viewsPath = prefix ? Path.resolve(prefix, 'public', 'views') : Path.resolve('public', 'views');
 
 const register = async (server: Hapi.Server, options?: IPluginOptions): Promise<void> => {
     try {
@@ -20,7 +24,7 @@ const register = async (server: Hapi.Server, options?: IPluginOptions): Promise<
             path: viewsPath,
             layoutPath: Path.resolve(viewsPath, 'layouts'),
             layout: 'index',
-            isCached: process.env.NODE_ENV === 'production',
+            isCached: NODE_ENV === 'production',
             context: {
                 title: config.layoutTitle || 'Team Milestones'
             }
@@ -32,10 +36,10 @@ const register = async (server: Hapi.Server, options?: IPluginOptions): Promise<
 };
 
 export default (): IPlugin => {
-	return {
-		register,
-		info: () => {
-			return { name: "Handlebars Documentation", version: "1.0.0" };
-		}
-	};
+    return {
+        register,
+        info: () => {
+            return { name: "Handlebars Documentation", version: "1.0.0" };
+        }
+    };
 };

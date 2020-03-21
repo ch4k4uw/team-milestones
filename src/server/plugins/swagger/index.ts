@@ -5,7 +5,9 @@ import * as Hapi from "@hapi/hapi";
 import * as HapiSwagger from "hapi-swagger";
 import { IPluginOptions } from "../";
 import { IServerConfigurations } from "../../../core/abstraction/model/server-config";
+import { Environment } from "../../../core/environment";
 
+const NODE_ENV = Environment.getNodeEnv();
 const register = async (server: Hapi.Server, options?: IPluginOptions): Promise<void> => {
 	try {
 		const config = options ? options.serverConfigs : {} as IServerConfigurations;
@@ -13,7 +15,7 @@ const register = async (server: Hapi.Server, options?: IPluginOptions): Promise<
 			Inert,
 			Vision
 		]);
-		return server.register([
+		return await server.register([
 			{
 				plugin: HapiSwagger,
 				options: {
@@ -29,7 +31,7 @@ const register = async (server: Hapi.Server, options?: IPluginOptions): Promise<
 						}
 					],
 					sortTags: 'alpha',
-					debug: process.env.NODE_ENV !== 'production',
+					debug: NODE_ENV !== 'production',
 					swaggerUI: true,
 					documentationPage: true,
 					documentationPath: "/docs"
