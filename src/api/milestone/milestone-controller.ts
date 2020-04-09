@@ -67,7 +67,8 @@ export default class MilestoneController {
     }
 
     async getMilestones(_request: IRequest, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> {
-        const result = await this.mRepository.listAll();
+        const result = (await this.mRepository.listAll())
+            .sort((firstMilestone, secondMilestone) => firstMilestone.date.getTime() - secondMilestone.date.getTime());
         return h.response(result).code(200);
     }
 
