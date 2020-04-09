@@ -6,6 +6,7 @@ import { IDatabase, ITransaction } from "../abstraction/db/database";
 import { IFirebaseConfig } from "../abstraction/model/firebase-config";
 import { IMilestone } from '../abstraction/model/milestone';
 import { Environment } from "../environment";
+import * as moment from 'moment';
 
 const env = !Environment.isProduction() ? '-' + (Environment.getNodeEnv() || 'dev') : '';
 const migrationFilePath = Path.resolve(__dirname, `migrations${env}.json`);
@@ -64,6 +65,7 @@ class FirebaseDatabase implements IDatabase {
         const doc = this.mMilestonesCollRef.doc();
 
         milestone.id = doc.id;
+        milestone.date = new Date(milestone.year, milestone.month || 1, milestone.day || 1);
         milestone.createdAt = new Date();
         milestone.updatedAt = milestone.createdAt;
 
@@ -83,6 +85,7 @@ class FirebaseDatabase implements IDatabase {
             const doc = this.mMilestonesCollRef.doc();
 
             milestone.id = doc.id;
+            milestone.date = new Date(milestone.year, milestone.month, milestone.day || 1);
             milestone.createdAt = new Date();
             milestone.createdAt.setMilliseconds(milestone.createdAt.getMilliseconds() + i);
             milestone.updatedAt = milestone.createdAt;
@@ -110,6 +113,7 @@ class FirebaseDatabase implements IDatabase {
             throw new Error('Id field must be specified');
         }
         try {
+            milestone.date = new Date(milestone.year, milestone.month, milestone.day || 1);
             milestone.updatedAt = new Date();
             if (transaction) {
                 (transaction.transaction as firestore.Transaction)
