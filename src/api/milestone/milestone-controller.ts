@@ -1,11 +1,12 @@
-import * as Hapi from '@hapi/hapi';
 import * as Boom from '@hapi/boom';
-import '../../core/extensions';
+import * as Hapi from '@hapi/hapi';
 import { IContext } from "../../core/abstraction/app-context";
-import { IMilestoneRequest, IMilestonesRequest } from "../../server/abstraction/model/milestone-request";
-import { IRequest } from '../../server/abstraction/model/request';
 import { IMilestone } from '../../core/abstraction/model/milestone';
 import { IMilestonesRepository } from '../../core/abstraction/repository/milestone';
+import '../../core/extensions';
+import { IMilestonePayload } from '../../server/abstraction/model/milestone-payload';
+import { IMilestoneRequest, IMilestonesRequest } from "../../server/abstraction/model/milestone-request";
+import { IRequest } from '../../server/abstraction/model/request';
 
 export default class MilestoneController {
     private mRepository: IMilestonesRepository = null;
@@ -14,52 +15,9 @@ export default class MilestoneController {
     }
 
     async getMilestonesView(_request: IRequest, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject | Boom> {
-        const dto: [
-            {
-                year: number,
-                milestones: [
-                    {
-                        day: string,
-                        month: string,
-                        description: string
-                    }?
-                ]
-            }?
-        ] = [];
-
         try {
-            const milestones = await this.mRepository.listAll();
-            const padLeft = (n?: number) => {
-                return `${n && n < 10 ? '0' : ''}${n || '-'}`;
-            };
-            let lastYear: number = 0;
-            let currDto: [
-                {
-                    day: string,
-                    month: string,
-                    description: string
-                }?
-            ];
-            milestones.sort((milestone1, milestone2) => {
-                const m1 = `${milestone1.year}-${padLeft(milestone1.month)}-${padLeft(milestone1.day)}##'${milestone1.description}#`;
-                const m2 = `${milestone2.year}-${padLeft(milestone2.month)}-${padLeft(milestone2.day)}##'${milestone2.description}#`;
-
-                return m1 > m2 ? 1 : -1;
-            }).forEach(milestone => {
-                if (milestone.year !== lastYear) {
-                    lastYear = milestone.year;
-                    currDto = [];
-                    dto.push({ year: milestone.year, milestones: currDto });
-                }
-                currDto.push({
-                    day: padLeft(milestone.day),
-                    month: (milestone.month - 1).toShortMonthName(),
-                    description: milestone.description
-                });
-            });
-
             return h.view('timeline', {
-                years: dto
+                years: this.toViewDto(await this.mRepository.listAll())
             });
         } catch (e) {
             return Boom.badImplementation(e.message || e);
@@ -67,14 +25,13 @@ export default class MilestoneController {
     }
 
     async getMilestones(_request: IRequest, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> {
-        const result = (await this.mRepository.listAll())
-            .sort((firstMilestone, secondMilestone) => firstMilestone.date.getTime() - secondMilestone.date.getTime());
+        const result = this.sortMilestones(await this.mRepository.listAll());
         return h.response(result).code(200);
     }
 
     async postMilestones(request: IMilestonesRequest, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject | Boom> {
         try {
-            await this.mRepository.addAll(request.payload);
+            await this.mRepository.addAll(this.preparePost(request.payload));
             return h.response(request.payload).code(201);
         } catch (e) {
             return Boom.badImplementation(e.message || e);
@@ -83,10 +40,7 @@ export default class MilestoneController {
 
     async putMilestone(request: IMilestoneRequest, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject | Boom> {
         try {
-            const id = request.params.id;
-            const milestone = request.payload as IMilestone;
-            milestone.id = id;
-
+            const milestone = this.preparePut(request.payload, request.params.id);
             await this.mRepository.update(milestone);
             return h.response(milestone).code(200);
         } catch (e) {
@@ -106,5 +60,78 @@ export default class MilestoneController {
     async failAction(_request: IRequest, _h: Hapi.ResponseToolkit, err?: Error) {
         //console.error(err);
         throw err;
+    }
+
+    private preparePost(payload: IMilestonePayload[]): IMilestone[] {
+        return payload.map(d => {
+            return {
+                year: d.year,
+                month: d.month,
+                day: d.day,
+                date: new Date(d.year, d.month, d.day || 1, 0, 0, 0, 0),
+                description: d.description
+            };
+        });
+    }
+
+    private preparePut(payload: IMilestonePayload, id): IMilestone {
+        return {
+            id: id,
+            year: payload.year,
+            month: payload.month,
+            day: payload.day,
+            date: new Date(payload.year, payload.month, payload.day || 1, 0, 0, 0, 0),
+            description: payload.description
+        };
+    }
+
+    private sortMilestones(milestones: IMilestone[]): IMilestone[] {
+        return milestones.sort((firstMilestone, secondMilestone) => {
+            let result = firstMilestone.date.getTime() - secondMilestone.date.getTime();
+            if (result === 0) {
+                return firstMilestone.description.localeCompare(secondMilestone.description);
+            }
+            return result;
+        });
+    }
+
+    private toViewDto(milestones: IMilestone[]): any {
+        const dto: [
+            {
+                year: number,
+                milestones: [
+                    {
+                        day: string,
+                        month: string,
+                        description: string
+                    }?
+                ]
+            }?
+        ] = [];
+
+        const padLeft = (n?: number) => {
+            return `${n && n < 10 ? '0' : ''}${n || '-'}`;
+        };
+        let lastYear: number = 0;
+        let currDto: [
+            {
+                day: string,
+                month: string,
+                description: string
+            }?
+        ];
+        this.sortMilestones(milestones).forEach(milestone => {
+            if (milestone.year !== lastYear) {
+                lastYear = milestone.year;
+                currDto = [];
+                dto.push({ year: milestone.year, milestones: currDto });
+            }
+            currDto.push({
+                day: padLeft(milestone.day),
+                month: (milestone.month - 1).toShortMonthName(),
+                description: milestone.description
+            });
+        });
+        return dto;
     }
 }

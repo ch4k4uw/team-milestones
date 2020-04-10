@@ -65,9 +65,10 @@ class FirebaseDatabase implements IDatabase {
         const doc = this.mMilestonesCollRef.doc();
 
         milestone.id = doc.id;
-        milestone.date = new Date(milestone.year, milestone.month || 1, milestone.day || 1);
         milestone.createdAt = new Date();
         milestone.updatedAt = milestone.createdAt;
+
+        this.assertMilestone(milestone);
 
         try {
             await (transaction ? (transaction.transaction as firestore.Transaction).create(doc, milestone) : doc.create(milestone));
@@ -85,10 +86,11 @@ class FirebaseDatabase implements IDatabase {
             const doc = this.mMilestonesCollRef.doc();
 
             milestone.id = doc.id;
-            milestone.date = new Date(milestone.year, milestone.month, milestone.day || 1);
             milestone.createdAt = new Date();
             milestone.createdAt.setMilliseconds(milestone.createdAt.getMilliseconds() + i);
             milestone.updatedAt = milestone.createdAt;
+
+            this.assertMilestone(milestone);
 
             (((transaction ? transaction.transaction : null) || batch) as any).create(doc, milestone);
 
@@ -113,7 +115,7 @@ class FirebaseDatabase implements IDatabase {
             throw new Error('Id field must be specified');
         }
         try {
-            milestone.date = new Date(milestone.year, milestone.month, milestone.day || 1);
+            this.assertMilestone(milestone);
             milestone.updatedAt = new Date();
             if (transaction) {
                 (transaction.transaction as firestore.Transaction)
@@ -175,16 +177,19 @@ class FirebaseDatabase implements IDatabase {
                 {
                     year: 2020,
                     month: 1,
+                    date: new Date(2020, 0, 1),
                     description: ''
                 },
                 {
                     year: 2020,
                     month: 1,
+                    date: new Date(2020, 0, 1),
                     description: ''
                 },
                 {
                     year: 2020,
                     month: 1,
+                    date: new Date(2020, 0, 1),
                     description: ''
                 },
                 {
@@ -372,7 +377,30 @@ class FirebaseDatabase implements IDatabase {
 
             console.log('Successful prepopulated!!!');
 
+        } else if (version === 1) {
+            const milestones = await this.queryAllMilestones();
+            this.mFirebaseApp.firestore().runTransaction(async t => {
+                milestones.forEach(async m => {
+                    m.date = new Date(m.year, m.month - 1, m.day || 1, 0, 0, 0, 0);
+                    t.update(this.mMilestonesCollRef.doc(m.id), m);
+                });
+            });
         }
+    }
+
+    private assertMilestone(milestone: IMilestone) {
+        if (!(milestone.date instanceof Date)) {
+            throw new Error('IMilestone::date must by a Date field type');
+        }
+
+        if (
+            (!milestone.day || milestone.day === 0 || milestone.day !== milestone.date.getDate()) ||
+            milestone.month - 1 !== milestone.date.getMonth() ||
+            milestone.year !== milestone.date.getFullYear()
+        ) {
+            throw new Error('Invalid date.');
+        }
+
     }
 }
 
