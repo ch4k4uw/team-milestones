@@ -31,6 +31,7 @@ describe.skip('App Context integration tests', () => {
         await milestonesRepository.add({
             year: 2020,
             month: 1,
+            date: new Date(2020, 0, 1),
             description: `Performed Test ${uuid.v4()}`
         });
 
@@ -43,6 +44,7 @@ describe.skip('App Context integration tests', () => {
         const milestone: IMilestone = {
             year: 2020,
             month: 1,
+            date: new Date(2020, 0, 1),
             description: `Performed Test ${uuid.v4()}`
         };
 
@@ -61,6 +63,7 @@ describe.skip('App Context integration tests', () => {
         const milestone: IMilestone = {
             year: 2020,
             month: 1,
+            date: new Date(2020, 0, 1),
             description: `Performed Test ${mUuid}`
         };
 

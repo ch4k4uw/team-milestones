@@ -3,7 +3,7 @@ export interface IMilestone {
     year: number;
     month: number;
     day?: number;
-    date?: Date;
+    date: Date;
     description: string;
     createdAt?: Date;
     updatedAt?: Date;

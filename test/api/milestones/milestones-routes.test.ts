@@ -6,6 +6,7 @@ import uuid = require("uuid");
 import { IMilestone } from "../../../src/core/abstraction/model/milestone";
 import { IContext } from "../../../src/core/abstraction/app-context";
 import { ContextMock } from "../../core/app-context.mock.test";
+import { IMilestonePayload } from "../../../src/server/abstraction/model/milestone-payload";
 
 const assert = Chai.assert;
 const expect = Chai.expect;
@@ -21,6 +22,7 @@ describe('Routes tests', () => {
             {
                 year: 2020,
                 month: 2,
+                date: new Date(2020, 1, 1),
                 description: 'Team Milestones project Released'
             },
             {
@@ -56,21 +58,25 @@ describe('Routes tests', () => {
             {
                 year: 2020,
                 month: 2,
+                date: new Date(2020, 1, 1),
                 description: 'We made the first test'
             },
             {
                 year: 2020,
                 month: 2,
+                date: new Date(2020, 1, 1),
                 description: 'We made the second test'
             },
             {
                 year: 2020,
                 month: 2,
+                date: new Date(2020, 1, 1),
                 description: 'We made the third test'
             },
             {
                 year: 2020,
                 month: 2,
+                date: new Date(2020, 1, 1),
                 description: 'We Finished the tests'
             }
         ]);
@@ -89,7 +95,7 @@ describe('Routes tests', () => {
     });
 
     it('Post a milestone', async () => {
-        const milestone: IMilestone = {
+        const milestone: IMilestonePayload = {
             year: 2020,
             month: 1,
             description: `Performed POST Test ${uuid.v4()}`
@@ -109,7 +115,7 @@ describe('Routes tests', () => {
     });
 
     it('Post malformed milestone 1', async () => {
-        const milestone: IMilestone = {
+        const milestone: IMilestonePayload = {
             year: 2020,
             month: 1,
             description: `Performed POST Test ${uuid.v4()}`
