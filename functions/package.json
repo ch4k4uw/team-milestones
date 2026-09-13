@@ -19,7 +19,7 @@
     "@hapi/good-console": "8.1.2",
     "@hapi/good-squeeze": "5.2.1",
     "@hapi/hapi": "18.4.0",
-    "@hapi/inert": "5.2.2",
+    "@hapi/inert": "7.1.1",
     "@hapi/joi": "15.1.1",
     "@hapi/joi-date": "1.3.0",
     "@hapi/vision": "5.5.4",
