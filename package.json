@@ -48,7 +48,7 @@
     "hapi-swagger": "10.2.0",
     "jsonwebtoken": "9.0.0",
     "moment": "2.22.1",
-    "moment-timezone": "0.5.16",
+    "moment-timezone": "0.5.35",
     "nconf": "0.10.0",
     "nodemon": "1.17.3",
     "path": "0.12.7",
